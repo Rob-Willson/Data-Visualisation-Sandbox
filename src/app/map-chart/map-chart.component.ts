@@ -7,6 +7,8 @@ import { AvatarLocationData } from '../core/data.model';
     imports: [],
     templateUrl: './map-chart.component.html',
     styleUrl: './map-chart.component.scss',
+    host: { 'style': 'display: block' },    // Ensure the component behaves as a block element so that it can be styled correctly
+                                            //    without relying on the parent (required due to encapsulation)
     encapsulation: ViewEncapsulation.None,  // Required for styles to affect svg
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -19,14 +21,20 @@ export class ChartComponent {
 
     private width: number = 600;
     private height: number = 400;
-    private pointRadius: number = 16;
+    private pointRadius: number = 10;
 
     private svg!: any;
     private inner!: any;
     private points!: any;
 
+    private resizeObserver!: ResizeObserver;
+
+    constructor(private elementRef: ElementRef) { }
+
     public ngAfterViewInit(): void {
-        this.plot();
+        this.resizeObserver = new ResizeObserver(() => this.resizeChart())
+        this.resizeObserver.observe(this.elementRef.nativeElement);
+        this.resizeChart();
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
@@ -39,6 +47,19 @@ export class ChartComponent {
         }
 
         this.plot();
+    }
+
+    public ngOnDestroy(): void {
+        this.resizeObserver.disconnect();
+    }
+
+    private resizeChart(): void {
+        if (this.elementRef.nativeElement) {
+            const heightAsRatioOfWidth: number = 0.75;
+            this.width = this.elementRef.nativeElement.clientWidth;
+            this.height = this.elementRef.nativeElement.clientWidth * heightAsRatioOfWidth;
+            this.plot();
+        }
     }
 
     private plot(): void {

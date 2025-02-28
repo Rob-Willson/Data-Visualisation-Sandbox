@@ -21,7 +21,7 @@ export class ChartComponent {
 
     private width: number = 600;
     private height: number = 400;
-    private pointRadius: number = 10;
+    private pointRadius: number = 12;
 
     private svg!: any;
     private inner!: any;

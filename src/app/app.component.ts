@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ChartComponent } from "./map-chart/map-chart.component";
 import { AvatarLocationData } from './core/data.model';
@@ -6,6 +6,7 @@ import { AvatarDataService } from './services/avatar-data.service';
 
 @Component({
     selector: 'app-root',
+    standalone: true,
     imports: [RouterOutlet, ChartComponent],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
@@ -16,7 +17,7 @@ export class AppComponent implements OnInit {
 
     public avatarLocationData: AvatarLocationData[] = []
 
-    constructor(private changeDetectorRef: ChangeDetectorRef, private avatarDataService: AvatarDataService) { }
+    constructor(private avatarDataService: AvatarDataService) { }
 
     public ngOnInit(): void {
         this.avatarDataService.fetchLocationData()

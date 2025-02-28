@@ -1,10 +1,13 @@
 import { Component, Input, ElementRef, ChangeDetectionStrategy, ViewEncapsulation, ViewChild, SimpleChanges } from '@angular/core';
 import { select } from 'd3';
 import { AvatarLocationData } from '../core/data.model';
+import { MatCardModule } from '@angular/material/card';
+import { MatSlideToggleModule, MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 @Component({
     selector: 'map-chart',
-    imports: [],
+    standalone: true,
+    imports: [MatCardModule, MatSlideToggleModule],
     templateUrl: './map-chart.component.html',
     styleUrl: './map-chart.component.scss',
     host: { 'style': 'display: block' },    // Ensure the component behaves as a block element so that it can be styled correctly
@@ -18,6 +21,8 @@ export class ChartComponent {
 
     @Input({ required: true })
     public data!: AvatarLocationData[];
+
+    public gooeyMode: boolean = true;
 
     private width: number = 600;
     private height: number = 400;
@@ -51,6 +56,11 @@ export class ChartComponent {
 
     public ngOnDestroy(): void {
         this.resizeObserver.disconnect();
+    }
+
+    public onGooeyModeToggle(event: MatSlideToggleChange): void {
+        this.gooeyMode = event.checked;
+        this.setFilters();
     }
 
     private resizeChart(): void {
@@ -104,6 +114,47 @@ export class ChartComponent {
 
         this.inner = this.svg.append('g')
             .attr('class', 'inner');
+
+        this.generateFilters();
+        this.setFilters();
+    }
+
+    private generateFilters(): void {
+        const defs = this.svg.append("defs");
+
+        const filter = defs.append("filter")
+            .attr("id", "gooey")
+            .attr("x", "-20%")
+            .attr("y", "-20%")
+            .attr("width", "140%")
+            .attr("height", "140%");
+
+        filter.append("feGaussianBlur")
+            .attr("in", "SourceGraphic")
+            .attr("stdDeviation", "8")
+            .attr("result", "blur");
+
+        filter.append("feColorMatrix")
+            .attr("in", "blur")
+            .attr("mode", "matrix")
+            .attr("values", "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -15")
+            .attr("result", "gooey");
+    }
+
+    private setFilters(): void {
+        if (this.gooeyMode) {
+            this.addGooeyFilter();
+        } else {
+            this.removeGooeryFilter();
+        }
+    }
+
+    private addGooeyFilter(): void {
+        this.inner.attr("filter", "url(#gooey)")
+    }
+
+    private removeGooeryFilter(): void {
+        this.inner.attr("filter", null)
     }
 
     private getChartInnerPadding(): number {

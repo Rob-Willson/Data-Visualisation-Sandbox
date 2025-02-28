@@ -1,0 +1,13 @@
+.chart-container {
+    background-color: rgba(255, 255, 255, 0.25);
+    width: 600px;
+    height: 400px;
+    border: 2px solid black;
+    border-radius: 4px;
+
+    svg {
+        .datum {
+            fill: rgb(46, 162, 230);
+        }
+    }
+}

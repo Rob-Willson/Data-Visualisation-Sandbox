@@ -1,0 +1,36 @@
+<div class="layout-container">
+    <header class="header">
+        <h1>{{siteName}}</h1>
+        <h2>{{pageTitle}}</h2>
+    </header>
+
+    <div class="main-content">
+        <aside class="navbar">
+            <nav>
+                <ul class="navbar__list">
+                    <li class="navbar__list__item">
+                        <button disableRipple [disableRipple]="true" [routerLink]="['/']" mat-icon-button aria-label="Home" class="navbar__list__item__button">
+                            <mat-icon>home</mat-icon>
+                        </button>
+                    </li>
+                    <li class="navbar__list__item">
+                        <button disableRipple [disableRipple]="true" [routerLink]="['/']" mat-icon-button aria-label="Charts" class="navbar__list__item__button">
+                            <mat-icon>bar_chart</mat-icon>
+                        </button>
+                    </li>
+                    <li class="navbar__list__item">
+                        <button disableRipple [disableRipple]="true" [routerLink]="['/']" mat-icon-button aria-label="Maps" class="navbar__list__item__button">
+                            <mat-icon>map</mat-icon>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="content">
+            <router-outlet></router-outlet>
+        </main>
+    </div>
+
+    <footer class="footer">Footer</footer>
+</div>

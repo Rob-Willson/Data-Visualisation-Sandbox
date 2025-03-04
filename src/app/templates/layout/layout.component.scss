@@ -1,0 +1,71 @@
+.layout-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+
+    .header {
+        flex-shrink: 0; 
+        padding: 24px;
+        border-bottom: var(--primary-element-border-width) solid var(--page-layout-element-border-color);
+    }
+
+    .main-content {
+        display: flex;
+        flex: 1;
+
+        .content {
+            flex: 1;
+            padding: 8px;
+        }
+
+        .navbar {
+            background-color: var(--primary-border-radius);
+            border-right: var(--primary-element-border-width) solid var(--page-layout-element-border-color);
+
+            &__list {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                margin: 8px;
+
+                &__item {
+                    border-radius: var(--primary-border-radius);
+                    background-color: rgb(48, 48, 48);
+                    border: var(--primary-element-border-width) solid var(--primary-button-border-color);
+
+                    &__button {
+                        width: 60px;
+                        height: 60px;
+                        font-size: 36px;
+                        border-radius: var(--primary-border-radius);
+                        color: var(--primary-text-color);
+                        transition: ease 0.25s;
+    
+                        &:hover {
+                            background-color: var(--secondary-brand-color);
+                            color: var(--primary-brand-color-highlight);
+                        }            
+                        
+                        &:active {
+                            transition: 0s;
+                            color: white;
+                            background-color: var(--secondary-brand-color-highlight);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .footer {
+        flex-shrink: 0;
+        padding: 24px;
+        border-top: var(--primary-element-border-width) solid var(--page-layout-element-border-color);
+    }
+}
+
+// HACK: override the shape of Angular Materials button 'ripple'
+//       No, disableRipple does not fix this!
+::ng-deep .navbar__list__item__button .mat-mdc-button-persistent-ripple {
+    display: none;
+}

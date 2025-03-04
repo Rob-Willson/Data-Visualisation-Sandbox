@@ -1,6 +1,6 @@
 import { Component, Input, ElementRef, ChangeDetectionStrategy, ViewEncapsulation, ViewChild, SimpleChanges } from '@angular/core';
 import { select } from 'd3';
-import { AvatarLocationData } from '../core/data.model';
+import { AvatarLocationData } from '../../core/data.model';
 import { MatCardModule } from '@angular/material/card';
 import { MatSlideToggleModule, MatSlideToggleChange } from '@angular/material/slide-toggle';
 

@@ -24,9 +24,10 @@ export class ChartComponent {
 
     public gooeyMode: boolean = true;
 
-    private width: number = 600;
-    private height: number = 400;
-    private pointRadius: number = 12;
+    private width!: number;
+    private height!: number;
+    
+    private readonly  pointRadius: number = 12;
 
     private svg!: any;
     private inner!: any;
@@ -37,8 +38,8 @@ export class ChartComponent {
     constructor(private elementRef: ElementRef) { }
 
     public ngAfterViewInit(): void {
-        this.resizeObserver = new ResizeObserver(() => this.resizeChart())
-        this.resizeObserver.observe(this.elementRef.nativeElement);
+        this.resizeObserver = new ResizeObserver(() => this.resizeChart());
+        this.resizeObserver.observe(this.getResizerTarget());
         this.resizeChart();
     }
 
@@ -64,12 +65,23 @@ export class ChartComponent {
     }
 
     private resizeChart(): void {
-        if (this.elementRef.nativeElement) {
-            const heightAsRatioOfWidth: number = 0.75;
-            this.width = this.elementRef.nativeElement.clientWidth;
-            this.height = this.elementRef.nativeElement.clientWidth * heightAsRatioOfWidth;
-            this.plot();
+        const resizerTarget = this.getResizerTarget();
+        if (!resizerTarget)
+            return;
+    
+        const heightAsRatioOfWidth: number = 0.75;
+        const maxChartHeight: number = window.innerHeight - 400;
+
+        this.width = resizerTarget.clientWidth;
+        this.height = this.width * heightAsRatioOfWidth;
+
+        if (this.height > maxChartHeight) {
+            this.height = maxChartHeight;
+            const widthAsRatioOfHeight = 1 / heightAsRatioOfWidth;
+            this.width = this.height * widthAsRatioOfHeight;
         }
+
+        this.plot();
     }
 
     private plot(): void {
@@ -82,7 +94,9 @@ export class ChartComponent {
 
         this.svg
             .attr('width', this.width)
-            .attr('height', this.height);
+            .attr('height', this.height)
+            .attr('viewBox', `0 0 ${this.width} ${this.height}`)
+            .attr('preserveAspectRatio', 'xMidYMid meet');
 
         this.inner
             .attr('width', chartInnerWidth)
@@ -155,6 +169,10 @@ export class ChartComponent {
 
     private removeGooeryFilter(): void {
         this.inner.attr("filter", null)
+    }
+
+    private getResizerTarget(): any {
+        return this.elementRef.nativeElement;
     }
 
     private getChartInnerPadding(): number {

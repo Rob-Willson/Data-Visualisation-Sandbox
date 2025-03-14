@@ -7,7 +7,7 @@ import { MatCard, MatCardContent } from '@angular/material/card';
 @Component({
   selector: 'map-page',
   standalone: true,
-  imports: [ChartComponent, MatCard, MatCardContent],
+  imports: [ChartComponent],
   templateUrl: './map-page.component.html',
   styleUrl: './map-page.component.scss'
 })

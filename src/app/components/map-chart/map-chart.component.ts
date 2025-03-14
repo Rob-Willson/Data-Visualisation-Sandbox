@@ -1,8 +1,23 @@
-import { Component, Input, ElementRef, ChangeDetectionStrategy, ViewEncapsulation, ViewChild, SimpleChanges } from '@angular/core';
+import {
+    Component,
+    Input,
+    ElementRef,
+    ChangeDetectionStrategy,
+    ViewEncapsulation,
+    ViewChild,
+    SimpleChanges,
+    AfterViewInit,
+    OnDestroy,
+    OnChanges,
+    inject,
+    DestroyRef,
+} from '@angular/core';
 import { select } from 'd3';
 import { AvatarLocationData } from '../../core/data.model';
 import { MatCardModule } from '@angular/material/card';
 import { MatSlideToggleModule, MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { Subject, debounceTime } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'map-chart',
@@ -15,7 +30,7 @@ import { MatSlideToggleModule, MatSlideToggleChange } from '@angular/material/sl
     encapsulation: ViewEncapsulation.None,  // Required for styles to affect svg
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChartComponent {
+export class ChartComponent implements AfterViewInit, OnChanges, OnDestroy {
     @ViewChild('chartContainer', { static: false })
     public chartContainerElement!: ElementRef;
 
@@ -34,12 +49,20 @@ export class ChartComponent {
     private points!: any;
 
     private resizeObserver!: ResizeObserver;
+    private resizeDebounceSubject = new Subject<void>();
+    private readonly destroyRef = inject(DestroyRef);
 
     constructor(private elementRef: ElementRef) { }
 
     public ngAfterViewInit(): void {
-        this.resizeObserver = new ResizeObserver(() => this.resizeChart());
+        this.resizeObserver = new ResizeObserver(() => this.resizeDebounceSubject.next());
         this.resizeObserver.observe(this.getResizerTarget());
+
+        this.resizeDebounceSubject.pipe(
+            debounceTime(100),
+            takeUntilDestroyed(this.destroyRef),
+        ).subscribe(() => this.resizeChart());
+
         this.resizeChart();
     }
 
